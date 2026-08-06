@@ -1,24 +1,46 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { LayoutDashboard } from "lucide-react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { ModulePlaceholder } from "@/components/common/module-placeholder";
+
+const title = "Dashboard — Northstar OS";
+const description =
+  "The AI-powered operating system for small and medium businesses: KPIs, cash flow, invoices and an executive assistant in one place.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+    ],
+  }),
+  component: DashboardPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function DashboardPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <AppShell>
+      <PageHeader
+        title="Dashboard"
+        description="Your business at a glance. The AI Executive Assistant briefing lands here in Step 3."
       />
-    </div>
+      <ModulePlaceholder
+        icon={LayoutDashboard}
+        title="Dashboard module"
+        summary="Architecture is in place: shell, navigation, design system and routing. The KPI grid, charts and AI briefing card come next."
+        planned={[
+          "AI Executive Assistant briefing card",
+          "Revenue, expenses, profit and cash flow KPIs",
+          "Open invoices and overdue alerts",
+          "Performance charts (Recharts)",
+          "Inventory alerts and tasks",
+          "Quick actions and upcoming meetings",
+        ]}
+      />
+    </AppShell>
   );
 }
