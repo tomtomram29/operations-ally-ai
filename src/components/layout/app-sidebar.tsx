@@ -13,7 +13,7 @@ export function AppSidebar({ onNavigate }: AppSidebarProps) {
 
   return (
     <div className="flex h-full flex-col gap-6 bg-sidebar px-4 py-6">
-      <Link to="/" onClick={onNavigate} className="flex items-center gap-3 px-2">
+      <Link to="/dashboard" onClick={onNavigate} className="flex items-center gap-3 px-2">
         <span
           className="flex size-9 items-center justify-center rounded-xl text-primary-foreground"
           style={{ backgroundImage: "var(--gradient-ai)" }}

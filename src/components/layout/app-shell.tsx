@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
+import { UserMenu } from "@/components/layout/user-menu";
 
 type AppShellProps = {
   children: ReactNode;
@@ -46,9 +47,7 @@ export function AppShell({ children }: AppShellProps) {
             <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="size-4.5" />
             </Button>
-            <span className="flex size-9 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-strong">
-              MR
-            </span>
+            <UserMenu />
           </div>
         </header>
 

@@ -9,7 +9,7 @@ const title = "Sales — Northstar OS";
 const description =
   "Track pipeline, quotations and orders with AI analysis of what is winning and what is stalling.";
 
-export const Route = createFileRoute("/sales")({
+export const Route = createFileRoute("/_authenticated/sales")({
   head: () => ({
     meta: [
       { title },
