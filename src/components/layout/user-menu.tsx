@@ -29,7 +29,7 @@ export function UserMenu() {
   const queryClient = useQueryClient();
 
   const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? "Account";
+    (user?.user_metadata?.["full_name"] as string | undefined) ?? user?.email ?? "Account";
   const initials = initialsOf(displayName) || "NS";
 
   async function handleSignOut() {
