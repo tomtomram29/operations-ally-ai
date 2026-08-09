@@ -33,7 +33,7 @@ export const navSections: NavSection[] = [
     items: [
       {
         label: "Dashboard",
-        to: "/",
+        to: "/dashboard",
         icon: LayoutDashboard,
         description: "Business KPIs, cash flow and daily briefing",
       },
