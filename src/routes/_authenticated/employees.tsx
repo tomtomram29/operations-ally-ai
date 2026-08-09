@@ -9,7 +9,7 @@ const title = "Employees — Northstar OS";
 const description =
   "Manage your team: roles, permissions, time tracking and workload distribution.";
 
-export const Route = createFileRoute("/employees")({
+export const Route = createFileRoute("/_authenticated/employees")({
   head: () => ({
     meta: [
       { title },

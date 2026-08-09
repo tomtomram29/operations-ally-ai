@@ -9,7 +9,7 @@ const title = "Inventory — Northstar OS";
 const description =
   "Stock levels, movements and predictive reorder alerts before an item runs out.";
 
-export const Route = createFileRoute("/inventory")({
+export const Route = createFileRoute("/_authenticated/inventory")({
   head: () => ({
     meta: [
       { title },

@@ -9,7 +9,7 @@ const title = "Reports — Northstar OS";
 const description =
   "Financial and operational analytics, plus AI-written weekly and monthly business summaries.";
 
-export const Route = createFileRoute("/reports")({
+export const Route = createFileRoute("/_authenticated/reports")({
   head: () => ({
     meta: [
       { title },

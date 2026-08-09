@@ -9,7 +9,7 @@ const title = "Settings — Northstar OS";
 const description =
   "Company profile, team access, billing and integrations for your business operating system.";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title },

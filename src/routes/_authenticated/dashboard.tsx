@@ -9,7 +9,7 @@ const title = "Dashboard — Northstar OS";
 const description =
   "The AI-powered operating system for small and medium businesses: KPIs, cash flow, invoices and an executive assistant in one place.";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title },

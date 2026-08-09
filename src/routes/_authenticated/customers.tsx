@@ -9,7 +9,7 @@ const title = "Customers — Northstar OS";
 const description =
   "Unified CRM for SMBs: contacts, activity history, follow-ups and AI-suggested next actions.";
 
-export const Route = createFileRoute("/customers")({
+export const Route = createFileRoute("/_authenticated/customers")({
   head: () => ({
     meta: [
       { title },
