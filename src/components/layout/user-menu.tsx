@@ -4,6 +4,7 @@ import { LogOut, Settings, User } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/use-session";
+import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ function initialsOf(name: string) {
 
 export function UserMenu() {
   const { user } = useSession();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -59,14 +61,14 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => navigate({ to: "/settings" })}>
-          <User className="size-4" /> Profile
+          <User className="size-4" /> {t("menu.profile")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => navigate({ to: "/settings" })}>
-          <Settings className="size-4" /> Settings
+          <Settings className="size-4" /> {t("menu.settings")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void handleSignOut()}>
-          <LogOut className="size-4" /> Sign out
+          <LogOut className="size-4" /> {t("menu.signout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
