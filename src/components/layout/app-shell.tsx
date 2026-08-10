@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { UserMenu } from "@/components/layout/user-menu";
+import { LanguageSwitcher } from "@/components/common/language-switcher";
+import { useI18n } from "@/lib/i18n";
 
 type AppShellProps = {
   children: ReactNode;
@@ -13,6 +15,7 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <div className="flex min-h-screen w-full bg-surface">
@@ -38,12 +41,13 @@ export function AppShell({ children }: AppShellProps) {
           <div className="relative hidden max-w-sm flex-1 md:block">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search customers, invoices, anything…"
+              placeholder={t("shell.search")}
               className="h-9 rounded-lg border-border bg-surface pl-9 text-sm"
             />
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
             <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="size-4.5" />
             </Button>
