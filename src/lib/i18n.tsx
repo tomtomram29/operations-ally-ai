@@ -241,7 +241,15 @@ type I18nValue = {
   ready: boolean;
 };
 
-const I18nContext = createContext<I18nValue | null>(null);
+const fallbackValue: I18nValue = {
+  language: "en",
+  setLanguage: () => {},
+  t: (key: string) => en[key] ?? key,
+  chosen: true,
+  ready: false,
+};
+
+const I18nContext = createContext<I18nValue>(fallbackValue);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>("en");
@@ -285,7 +293,5 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 }
 
 export function useI18n() {
-  const ctx = useContext(I18nContext);
-  if (!ctx) throw new Error("useI18n must be used within I18nProvider");
-  return ctx;
+  return useContext(I18nContext);
 }
