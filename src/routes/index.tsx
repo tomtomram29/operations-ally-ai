@@ -3,6 +3,8 @@ import { Sparkles, ArrowRight, BarChart3, Users, FileText, Package } from "lucid
 
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/use-session";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/common/language-switcher";
 
 const title = "Northstar OS — The AI Operating System for Business";
 const description =
@@ -21,14 +23,15 @@ export const Route = createFileRoute("/")({
 });
 
 const pillars = [
-  { icon: Users, title: "Customers", copy: "A CRM that remembers every conversation and nudges you first." },
-  { icon: FileText, title: "Invoices", copy: "Billing, payments and dunning that chase themselves." },
-  { icon: Package, title: "Inventory", copy: "Stock levels, reorder points and supplier alerts in real time." },
-  { icon: BarChart3, title: "Reports", copy: "Financial clarity without a spreadsheet in sight." },
+  { icon: Users, key: "customers" },
+  { icon: FileText, key: "invoices" },
+  { icon: Package, key: "inventory" },
+  { icon: BarChart3, key: "reports" },
 ];
 
 function LandingPage() {
   const { user, loading } = useSession();
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,19 +47,20 @@ function LandingPage() {
             <span className="text-sm font-semibold text-foreground">Northstar OS</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
             {loading ? null : user ? (
               <Button asChild size="sm">
                 <Link to="/dashboard">
-                  Open dashboard <ArrowRight className="size-4" />
+                  {t("landing.open")} <ArrowRight className="size-4" />
                 </Link>
               </Button>
             ) : (
               <>
                 <Button asChild variant="ghost" size="sm">
-                  <Link to="/auth">Sign in</Link>
+                  <Link to="/auth">{t("landing.signin")}</Link>
                 </Button>
                 <Button asChild size="sm">
-                  <Link to="/auth">Get started</Link>
+                  <Link to="/auth">{t("landing.getstarted")}</Link>
                 </Button>
               </>
             )}
@@ -68,22 +72,22 @@ function LandingPage() {
         <section className="mx-auto w-full max-w-6xl px-4 py-20 text-center md:px-8 md:py-28">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
             <Sparkles className="size-3.5 text-primary" />
-            AI as your executive assistant
+            {t("landing.badge")}
           </span>
           <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-6xl">
-            The operating system for your business
+            {t("landing.h1")}
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            {description}
+            {t("landing.sub")}
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="h-11 px-6">
               <Link to={user ? "/dashboard" : "/auth"}>
-                {user ? "Open dashboard" : "Start free"} <ArrowRight className="size-4" />
+                {user ? t("landing.open") : t("landing.start")} <ArrowRight className="size-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="h-11 px-6">
-              <Link to="/auth">Book a walkthrough</Link>
+              <Link to="/auth">{t("landing.demo")}</Link>
             </Button>
           </div>
         </section>
@@ -92,14 +96,18 @@ function LandingPage() {
           <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-16 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
             {pillars.map((pillar) => (
               <div
-                key={pillar.title}
+                key={pillar.key}
                 className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]"
               >
                 <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-primary-strong">
                   <pillar.icon className="size-4.5" />
                 </span>
-                <h2 className="mt-4 text-sm font-semibold text-card-foreground">{pillar.title}</h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{pillar.copy}</p>
+                <h2 className="mt-4 text-sm font-semibold text-card-foreground">
+                  {t(`nav.${pillar.key}`)}
+                </h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {t(`landing.${pillar.key}`)}
+                </p>
               </div>
             ))}
           </div>
@@ -108,7 +116,7 @@ function LandingPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 text-xs text-muted-foreground md:px-8">
-          © {new Date().getFullYear()} Northstar OS. All rights reserved.
+          © {new Date().getFullYear()} Northstar OS. {t("landing.rights")}
         </div>
       </footer>
     </div>

@@ -7,6 +7,8 @@ import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/common/language-switcher";
 
 const title = "Sign in — Northstar OS";
 const description =
@@ -30,6 +32,7 @@ type Mode = "signin" | "signup";
 function AuthPage() {
   const navigate = useNavigate();
   const router = useRouter();
+  const { t } = useI18n();
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +67,7 @@ function AuthPage() {
       }
       await goToApp();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(err instanceof Error ? err.message : t("auth.error"));
     } finally {
       setLoading(false);
     }
@@ -77,7 +80,7 @@ function AuthPage() {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      setError("Google sign-in failed. Please try again.");
+      setError(t("auth.googleError"));
       setLoading(false);
       return;
     }
@@ -96,37 +99,37 @@ function AuthPage() {
         </Link>
         <div className="max-w-md text-primary-foreground">
           <h2 className="text-3xl font-semibold leading-tight tracking-tight">
-            The operating system for your business.
+            {t("auth.heroTitle")}
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-primary-foreground/80">
-            Customers, sales, invoices, inventory and people — unified, with an AI executive
-            assistant that briefs you every morning.
+            {t("auth.heroCopy")}
           </p>
         </div>
-        <p className="text-xs text-primary-foreground/70">Trusted infrastructure for modern SMBs.</p>
+        <p className="text-xs text-primary-foreground/70">{t("auth.heroFoot")}</p>
       </div>
 
       <div className="flex w-full flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
-          <div className="mb-8 lg:hidden">
+          <div className="mb-8 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
               <span
-                className="flex size-9 items-center justify-center rounded-xl text-primary-foreground"
+                className="flex size-9 items-center justify-center rounded-xl text-primary-foreground lg:hidden"
                 style={{ backgroundImage: "var(--gradient-ai)" }}
               >
                 <Sparkles className="size-4.5" />
               </span>
-              <span className="text-sm font-semibold text-foreground">Northstar OS</span>
+              <span className="text-sm font-semibold text-foreground lg:hidden">Northstar OS</span>
             </Link>
+            <div className="ml-auto">
+              <LanguageSwitcher />
+            </div>
           </div>
 
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {mode === "signin" ? "Welcome back" : "Create your workspace"}
+            {mode === "signin" ? t("auth.welcome") : t("auth.create")}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {mode === "signin"
-              ? "Sign in to continue running your business."
-              : "Start in under a minute. No credit card required."}
+            {mode === "signin" ? t("auth.welcomeSub") : t("auth.createSub")}
           </p>
 
           <Button
@@ -137,12 +140,12 @@ function AuthPage() {
             disabled={loading}
           >
             <GoogleMark />
-            Continue with Google
+            {t("auth.google")}
           </Button>
 
           <div className="my-6 flex items-center gap-3">
             <span className="h-px flex-1 bg-border" />
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">or</span>
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">{t("auth.or")}</span>
             <span className="h-px flex-1 bg-border" />
           </div>
 
@@ -150,7 +153,7 @@ function AuthPage() {
             {mode === "signup" && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full name</Label>
+                  <Label htmlFor="fullName">{t("auth.fullName")}</Label>
                   <Input
                     id="fullName"
                     value={fullName}
@@ -162,7 +165,7 @@ function AuthPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company">Company</Label>
+                  <Label htmlFor="company">{t("auth.company")}</Label>
                   <Input
                     id="company"
                     value={company}
@@ -175,7 +178,7 @@ function AuthPage() {
               </>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Work email</Label>
+              <Label htmlFor="email">{t("auth.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -188,7 +191,7 @@ function AuthPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -208,12 +211,12 @@ function AuthPage() {
 
             <Button type="submit" className="h-11 w-full" disabled={loading}>
               {loading && <Loader2 className="size-4 animate-spin" />}
-              {mode === "signin" ? "Sign in" : "Create workspace"}
+              {mode === "signin" ? t("auth.signin") : t("auth.signup")}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            {mode === "signin" ? "New to Northstar OS?" : "Already have an account?"}{" "}
+            {mode === "signin" ? t("auth.new") : t("auth.have")}{" "}
             <button
               type="button"
               className="font-medium text-primary hover:underline"
@@ -222,7 +225,7 @@ function AuthPage() {
                 setError(null);
               }}
             >
-              {mode === "signin" ? "Create an account" : "Sign in"}
+              {mode === "signin" ? t("auth.createLink") : t("auth.signin")}
             </button>
           </p>
         </div>
