@@ -1,13 +1,16 @@
-import { useState, type ReactNode } from "react";
-import { Menu, Search, Bell } from "lucide-react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { Menu, Search, Loader2 } from "lucide-react";
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { UserMenu } from "@/components/layout/user-menu";
+import { NotificationsBell } from "@/components/layout/notifications-bell";
 import { LanguageSwitcher } from "@/components/common/language-switcher";
 import { useI18n } from "@/lib/i18n";
+import { useCompany } from "@/lib/company";
 
 type AppShellProps = {
   children: ReactNode;
@@ -15,7 +18,20 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [term, setTerm] = useState("");
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const { company, isLoading } = useCompany();
+
+  useEffect(() => {
+    if (!isLoading && !company) navigate({ to: "/onboarding", replace: true });
+  }, [company, isLoading, navigate]);
+
+  function onSearch(event: FormEvent) {
+    event.preventDefault();
+    if (!term.trim()) return;
+    navigate({ to: "/search", search: { q: term.trim() } });
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-surface">
@@ -38,25 +54,38 @@ export function AppShell({ children }: AppShellProps) {
             </SheetContent>
           </Sheet>
 
-          <div className="relative hidden max-w-sm flex-1 md:block">
+          <form onSubmit={onSearch} className="relative hidden max-w-sm flex-1 md:block">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
+              value={term}
+              onChange={(event) => setTerm(event.target.value)}
               placeholder={t("shell.search")}
               className="h-9 rounded-lg border-border bg-surface pl-9 text-sm"
             />
-          </div>
+          </form>
 
           <div className="ml-auto flex items-center gap-2">
+            {company ? (
+              <span className="hidden max-w-[160px] truncate rounded-lg bg-surface px-2.5 py-1 text-xs font-medium text-muted-foreground sm:block">
+                {company.name}
+              </span>
+            ) : null}
             <LanguageSwitcher />
-            <Button variant="ghost" size="icon" aria-label="Notifications">
-              <Bell className="size-4.5" />
-            </Button>
+            <NotificationsBell />
             <UserMenu />
           </div>
         </header>
 
         <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
-          <div className="mx-auto w-full max-w-7xl">{children}</div>
+          <div className="mx-auto w-full max-w-7xl">
+            {isLoading ? (
+              <div className="flex items-center gap-2 py-16 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" /> Loading workspace...
+              </div>
+            ) : company ? (
+              children
+            ) : null}
+          </div>
         </main>
       </div>
     </div>
