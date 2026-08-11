@@ -121,7 +121,7 @@ function InvoicesPage() {
   const filtered = useMemo(() => {
     const needle = term.trim().toLowerCase();
     return invoices.filter((invoice) => {
-      const overdue = invoice.status !== "paid" && invoice.status !== "cancelled" && invoice.due_date < today;
+      const overdue = invoice.status !== "paid" && invoice.status !== "cancelled" && (invoice.due_date ?? "9999-12-31") < today;
       const effective = overdue ? "overdue" : invoice.status;
       if (status !== "all" && effective !== status) return false;
       if (!needle) return true;

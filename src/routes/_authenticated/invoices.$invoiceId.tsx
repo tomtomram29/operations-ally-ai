@@ -77,7 +77,7 @@ function InvoiceDetailPage() {
   };
 
   const updateInvoice = useMutation({
-    mutationFn: async (patch: Record<string, unknown>) => {
+    mutationFn: async (patch: { customer_id?: string | null; status?: string; issue_date?: string; due_date?: string }) => {
       const { error } = await supabase.from("invoices").update(patch).eq("id", invoiceId);
       if (error) throw error;
     },
@@ -262,7 +262,7 @@ function InvoiceDetailPage() {
                 <div className="space-y-1.5">
                   <Label htmlFor="due">Due date</Label>
                   <Input
-                    id="due" type="date" defaultValue={invoice.due_date}
+                    id="due" type="date" defaultValue={invoice.due_date ?? ""}
                     onBlur={(event) => updateInvoice.mutate({ due_date: event.target.value })}
                   />
                 </div>
