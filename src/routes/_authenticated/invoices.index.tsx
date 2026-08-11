@@ -9,7 +9,7 @@ const title = "Invoices — Northstar OS";
 const description =
   "Issue, send and chase invoices, with AI-generated documents and automatic payment reminders.";
 
-export const Route = createFileRoute("/_authenticated/invoices")({
+export const Route = createFileRoute("/_authenticated/invoices/")({
   head: () => ({
     meta: [
       { title },

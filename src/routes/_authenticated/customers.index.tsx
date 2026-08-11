@@ -35,7 +35,7 @@ import {
 const title = "Customers — Northstar OS";
 const description = "Your CRM: create, search and manage every customer, stored securely in your workspace.";
 
-export const Route = createFileRoute("/_authenticated/customers")({
+export const Route = createFileRoute("/_authenticated/customers/")({
   head: () => ({
     meta: [
       { title },
