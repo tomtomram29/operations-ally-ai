@@ -70,7 +70,7 @@ export async function fetchAlerts(companyId: string): Promise<Alert[]> {
       type: "task",
       title: `Task "${task.title}" is overdue`,
       body: `Due ${task.due_date}`,
-      to: "/tasks",
+      to: "/dashboard",
     });
   }
 
