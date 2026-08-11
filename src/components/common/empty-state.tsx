@@ -1,5 +1,5 @@
-import type { LucideIcon, ReactNode } from "lucide-react";
-import type { ReactNode as RN } from "react";
+import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -7,7 +7,7 @@ type EmptyStateProps = {
   icon?: LucideIcon;
   title: string;
   description: string;
-  action?: RN;
+  action?: ReactNode;
 };
 
 export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
@@ -26,4 +26,3 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
     </Card>
   );
 }
-export type { ReactNode };
