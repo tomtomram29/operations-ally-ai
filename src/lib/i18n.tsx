@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { extraDict } from "@/lib/i18n-dict";
+import { setFormatLocale } from "@/lib/format";
 
 export const LANGUAGES = [
   { code: "it", label: "Italiano", flag: "🇮🇹" },
