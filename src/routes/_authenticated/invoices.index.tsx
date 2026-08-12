@@ -5,6 +5,7 @@ import { FileText, Loader2, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 import { useCompany } from "@/lib/company";
 import { errorMessage, formatDate, formatMoney } from "@/lib/format";
 import { nextInvoiceNumber } from "@/lib/invoice-number";
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/_authenticated/invoices/")({
 });
 
 function InvoicesPage() {
+  const { t } = useI18n();
   const { companyId, company } = useCompany();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -95,7 +97,7 @@ function InvoicesPage() {
     },
     onError: (error) => {
       console.error("[invoices.create]", error);
-      toast.error(errorMessage(error, "Could not create the invoice."));
+      toast.error(errorMessage(error, t("ops.invoices.error.create")));
     },
   });
 
@@ -105,13 +107,13 @@ function InvoicesPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Invoice deleted");
+      toast.success(t("ops.invoices.toast.deleted"));
       queryClient.invalidateQueries({ queryKey: ["invoices", companyId] });
       queryClient.invalidateQueries({ queryKey: ["dashboard", companyId] });
     },
     onError: (error) => {
       console.error("[invoices.delete]", error);
-      toast.error(errorMessage(error, "Could not delete this invoice."));
+      toast.error(errorMessage(error, t("ops.invoices.error.delete")));
     },
   });
 
@@ -134,15 +136,18 @@ function InvoicesPage() {
   const newButton = (
     <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending || !companyId}>
       {createMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />}
-      New invoice
+      {t("ops.invoices.new")}
     </Button>
   );
 
   return (
     <AppShell>
       <PageHeader
-        title="Invoices"
-        description={`Billing and payment tracking${company ? ` for ${company.name}` : ""}.`}
+        title={t("ops.invoices.pageTitle")}
+        description={t("ops.invoices.pageDescription").replace(
+          "{forCompany}",
+          company ? t("ops.invoices.forCompany").replace("{name}", company.name) : "",
+        )}
         actions={newButton}
       />
 
@@ -152,19 +157,19 @@ function InvoicesPage() {
           <Input
             value={term}
             onChange={(event) => setTerm(event.target.value)}
-            placeholder="Search by number or customer..."
+            placeholder={t("ops.invoices.searchPlaceholder")}
             className="pl-9"
           />
         </div>
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="sm:w-48"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="sent">Sent</SelectItem>
-            <SelectItem value="overdue">Overdue</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
+            <SelectItem value="all">{t("ops.invoices.status.all")}</SelectItem>
+            <SelectItem value="draft">{t("ops.invoices.status.draft")}</SelectItem>
+            <SelectItem value="sent">{t("ops.invoices.status.sent")}</SelectItem>
+            <SelectItem value="overdue">{t("ops.invoices.status.overdue")}</SelectItem>
+            <SelectItem value="paid">{t("ops.invoices.status.paid")}</SelectItem>
+            <SelectItem value="cancelled">{t("ops.invoices.status.cancelled")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -172,29 +177,29 @@ function InvoicesPage() {
       {invoicesQuery.isLoading ? (
         <LoadingRows />
       ) : invoicesQuery.error ? (
-        <ErrorBlock message={errorMessage(invoicesQuery.error, "Could not load invoices.")} />
+        <ErrorBlock message={errorMessage(invoicesQuery.error, t("ops.invoices.error.load"))} />
       ) : invoices.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="No invoices yet"
-          description="Create your first invoice, add line items and track when it gets paid."
+          title={t("ops.invoices.empty.title")}
+          description={t("ops.invoices.empty.description")}
           action={newButton}
         />
       ) : filtered.length === 0 ? (
-        <EmptyState icon={Search} title="No matches" description="No invoice matches your search or filter." />
+        <EmptyState icon={Search} title={t("ops.invoices.emptySearch.title")} description={t("ops.invoices.emptySearch.description")} />
       ) : (
         <Card className="overflow-hidden border-border p-0 shadow-[var(--shadow-card)]">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Number</TableHead>
-                  <TableHead className="hidden md:table-cell">Customer</TableHead>
-                  <TableHead className="hidden sm:table-cell">Issued</TableHead>
-                  <TableHead className="hidden sm:table-cell">Due</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("ops.invoices.table.number")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("ops.invoices.table.customer")}</TableHead>
+                  <TableHead className="hidden sm:table-cell">{t("ops.invoices.table.issued")}</TableHead>
+                  <TableHead className="hidden sm:table-cell">{t("ops.invoices.table.due")}</TableHead>
+                  <TableHead>{t("ops.invoices.table.status")}</TableHead>
+                  <TableHead className="text-right">{t("ops.invoices.table.total")}</TableHead>
+                  <TableHead className="text-right">{t("ops.invoices.table.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -203,7 +208,7 @@ function InvoicesPage() {
                   const name =
                     [customer?.first_name, customer?.last_name].filter(Boolean).join(" ") ||
                     customer?.company_name ||
-                    "No customer";
+                    t("ops.invoices.noCustomer");
                   return (
                     <TableRow key={invoice.id}>
                       <TableCell>
@@ -226,8 +231,8 @@ function InvoicesPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <ConfirmDelete
-                          title="Delete this invoice?"
-                          description="The invoice and all its line items will be permanently removed."
+                          title={t("ops.invoices.delete.title")}
+                          description={t("ops.invoices.delete.description")}
                           onConfirm={() => deleteMutation.mutate(invoice.id)}
                           trigger={
                             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
