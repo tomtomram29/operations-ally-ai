@@ -30,7 +30,7 @@ export function InvoiceStatusBadge({ status, dueDate }: { status: string; dueDat
   const value = effectiveStatus(status, dueDate);
   return (
     <Badge variant="secondary" className={cn("border-0 font-medium", styles[value] ?? styles["draft"])}>
-      {t(labelKeys[value] ?? labelKeys.draft ?? "")}
+      {t(labelKeys[value] ?? labelKeys["draft"] ?? "")}
     </Badge>
   );
 }
