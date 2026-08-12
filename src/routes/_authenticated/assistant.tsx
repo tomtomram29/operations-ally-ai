@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useI18n } from "@/lib/i18n";
 import { Sparkles } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { ModulePlaceholder } from "@/components/common/module-placeholder";
+import { useI18n } from "@/lib/i18n";
 
 const title = "AI Assistant — Northstar OS";
 const description =
@@ -22,18 +24,19 @@ export const Route = createFileRoute("/_authenticated/assistant")({
 });
 
 function AssistantPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="AI Assistant" description="The executive assistant for your entire business." />
+      <PageHeader title={t("mod.assistant.title")} description={t("mod.assistant.desc")} />
       <ModulePlaceholder
         icon={Sparkles}
-        title="AI Assistant module"
-        summary="Scaffolded route reserved for the chat interface. Conversation shape and history storage are decisions we make together before building it."
+        title={t("mod.assistant.placeholderTitle")}
+        summary={t("mod.assistant.summary")}
         planned={[
-          "Streaming chat interface",
-          "Company-data grounded answers",
-          "Document and invoice generation",
-          "Action recommendations",
+          t("mod.assistant.p1"),
+          t("mod.assistant.p2"),
+          t("mod.assistant.p3"),
+          t("mod.assistant.p4"),
         ]}
       />
     </AppShell>

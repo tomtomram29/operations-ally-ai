@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useI18n } from "@/lib/i18n";
 import { Settings as SettingsIcon } from "lucide-react";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { ModulePlaceholder } from "@/components/common/module-placeholder";
+import { useI18n } from "@/lib/i18n";
 
 const title = "Settings — Northstar OS";
 const description =
@@ -22,18 +24,19 @@ export const Route = createFileRoute("/_authenticated/settings")({
 });
 
 function SettingsPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="Settings" description="Company profile, access and integrations." />
+      <PageHeader title={t("mod.settings.title")} description={t("mod.settings.desc")} />
       <ModulePlaceholder
         icon={SettingsIcon}
-        title="Settings module"
-        summary="Scaffolded route ready for workspace configuration."
+        title={t("mod.settings.placeholderTitle")}
+        summary={t("mod.settings.summary")}
         planned={[
-          "Company profile",
-          "Users and roles",
-          "Billing and plan",
-          "Integrations and API keys",
+          t("mod.settings.p1"),
+          t("mod.settings.p2"),
+          t("mod.settings.p3"),
+          t("mod.settings.p4"),
         ]}
       />
     </AppShell>
