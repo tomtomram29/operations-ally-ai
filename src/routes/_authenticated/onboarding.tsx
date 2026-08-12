@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompany } from "@/lib/company";
 import { errorMessage } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,6 +49,17 @@ const COUNTRIES = [
 
 const CURRENCIES = ["EUR", "USD", "GBP", "CHF"];
 
+const COMPANY_TYPE_KEYS = [
+  "services",
+  "retail",
+  "wholesale",
+  "manufacturing",
+  "construction",
+  "hospitality",
+  "technology",
+  "other",
+] as const;
+
 const COMPANY_TYPES = [
   "Services",
   "Retail",
@@ -60,6 +72,7 @@ const COMPANY_TYPES = [
 ];
 
 function OnboardingPage() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { company, isLoading } = useCompany();
@@ -103,7 +116,7 @@ function OnboardingPage() {
     try {
       const { data: userData } = await supabase.auth.getUser();
       const user = userData.user;
-      if (!user) throw new Error("Session expired. Please sign in again.");
+      if (!user) throw new Error(t("ops.onboarding.error.session"));
 
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
@@ -130,11 +143,11 @@ function OnboardingPage() {
         .upsert({ id: user.id, full_name: fullName, company_name: companyName.trim() });
 
       await queryClient.invalidateQueries();
-      toast.success("Workspace ready");
+      toast.success(t("ops.onboarding.toast.ready"));
       navigate({ to: "/dashboard", replace: true });
     } catch (err) {
       console.error("[onboarding]", err);
-      setError(errorMessage(err, "We couldn't create your workspace. Please try again."));
+      setError(errorMessage(err, t("ops.onboarding.error.generic")));
     } finally {
       setSaving(false);
     }
@@ -155,7 +168,7 @@ function OnboardingPage() {
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Sparkles className="size-4.5" />
           </span>
-          <span className="text-base font-semibold text-foreground">Northstar OS</span>
+          <span className="text-base font-semibold text-foreground">{t("ops.onboarding.brand")}</span>
         </div>
 
         <Card className="border-border bg-card shadow-[var(--shadow-card)]">
@@ -170,29 +183,29 @@ function OnboardingPage() {
             </div>
 
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Step {step} of 3
+              {t("ops.onboarding.stepOf").replace("{step}", String(step))}
             </p>
 
             {step === 1 && (
               <div className="mt-4 space-y-4">
                 <div>
-                  <h1 className="text-xl font-semibold text-card-foreground">About you</h1>
+                  <h1 className="text-xl font-semibold text-card-foreground">{t("ops.onboarding.step1.title")}</h1>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    We use this on invoices and documents.
+                    {t("ops.onboarding.step1.subtitle")}
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label htmlFor="firstName">First name</Label>
+                    <Label htmlFor="firstName">{t("ops.onboarding.step1.firstName")}</Label>
                     <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="lastName">Last name</Label>
+                    <Label htmlFor="lastName">{t("ops.onboarding.step1.lastName")}</Label>
                     <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t("ops.onboarding.step1.email")}</Label>
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
               </div>
@@ -201,13 +214,13 @@ function OnboardingPage() {
             {step === 2 && (
               <div className="mt-4 space-y-4">
                 <div>
-                  <h1 className="text-xl font-semibold text-card-foreground">Your company</h1>
+                  <h1 className="text-xl font-semibold text-card-foreground">{t("ops.onboarding.step2.title")}</h1>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    You can change all of this later in Settings.
+                    {t("ops.onboarding.step2.subtitle")}
                   </p>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="companyName">Company name</Label>
+                  <Label htmlFor="companyName">{t("ops.onboarding.step2.companyName")}</Label>
                   <Input
                     id="companyName"
                     value={companyName}
@@ -215,19 +228,21 @@ function OnboardingPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Company type</Label>
+                  <Label>{t("ops.onboarding.step2.companyType")}</Label>
                   <Select value={companyType} onValueChange={setCompanyType}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {COMPANY_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      {COMPANY_TYPES.map((type, index) => (
+                        <SelectItem key={type} value={type}>
+                          {t(`ops.onboarding.companyType.${COMPANY_TYPE_KEYS[index]}`)}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label>Country</Label>
+                    <Label>{t("ops.onboarding.step2.country")}</Label>
                     <Select value={country} onValueChange={setCountry}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -238,7 +253,7 @@ function OnboardingPage() {
                     </Select>
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Currency</Label>
+                    <Label>{t("ops.onboarding.step2.currency")}</Label>
                     <Select value={currency} onValueChange={setCurrency}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -255,19 +270,19 @@ function OnboardingPage() {
             {step === 3 && (
               <div className="mt-4 space-y-4">
                 <div>
-                  <h1 className="text-xl font-semibold text-card-foreground">Confirm</h1>
+                  <h1 className="text-xl font-semibold text-card-foreground">{t("ops.onboarding.step3.title")}</h1>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Review and enter your dashboard.
+                    {t("ops.onboarding.step3.subtitle")}
                   </p>
                 </div>
                 <dl className="divide-y divide-border rounded-xl border border-border bg-surface text-sm">
                   {[
-                    ["Name", `${firstName} ${lastName}`.trim()],
-                    ["Email", email],
-                    ["Company", companyName],
-                    ["Type", companyType],
-                    ["Country", COUNTRIES.find((c) => c.code === country)?.label ?? country],
-                    ["Currency", currency],
+                    [t("ops.onboarding.step3.name"), `${firstName} ${lastName}`.trim()],
+                    [t("ops.onboarding.step3.email"), email],
+                    [t("ops.onboarding.step3.company"), companyName],
+                    [t("ops.onboarding.step3.type"), companyType],
+                    [t("ops.onboarding.step3.country"), COUNTRIES.find((c) => c.code === country)?.label ?? country],
+                    [t("ops.onboarding.step3.currency"), currency],
                   ].map(([label, value]) => (
                     <div key={label} className="flex items-center justify-between px-4 py-2.5">
                       <dt className="text-muted-foreground">{label}</dt>
@@ -287,7 +302,7 @@ function OnboardingPage() {
                 onClick={() => setStep((s) => Math.max(1, s - 1))}
                 disabled={step === 1 || saving}
               >
-                <ArrowLeft className="size-4" /> Back
+                <ArrowLeft className="size-4" /> {t("ops.onboarding.back")}
               </Button>
               {step < 3 ? (
                 <Button
@@ -295,12 +310,12 @@ function OnboardingPage() {
                   onClick={() => setStep((s) => s + 1)}
                   disabled={(step === 1 && !step1Valid) || (step === 2 && !step2Valid)}
                 >
-                  Continue <ArrowRight className="size-4" />
+                  {t("ops.onboarding.continue")} <ArrowRight className="size-4" />
                 </Button>
               ) : (
                 <Button type="button" onClick={handleFinish} disabled={saving}>
                   {saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-                  {saving ? "Creating workspace..." : "Enter dashboard"}
+                  {saving ? t("ops.onboarding.creating") : t("ops.onboarding.enterDashboard")}
                 </Button>
               )}
             </div>

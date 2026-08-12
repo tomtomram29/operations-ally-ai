@@ -45,7 +45,7 @@ export function AppShell({ children }: AppShellProps) {
         <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md md:px-8">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation">
+              <Button variant="ghost" size="icon" className="lg:hidden" aria-label={t("ops.appShell.openNavigation")}>
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
@@ -80,7 +80,7 @@ export function AppShell({ children }: AppShellProps) {
           <div className="mx-auto w-full max-w-7xl">
             {isLoading ? (
               <div className="flex items-center gap-2 py-16 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" /> Loading workspace...
+                <Loader2 className="size-4 animate-spin" /> {t("ops.appShell.loadingWorkspace")}
               </div>
             ) : company ? (
               children

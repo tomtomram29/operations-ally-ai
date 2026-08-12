@@ -1,6 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
+
+type T = (key: string) => string;
+
+function fill(text: string, vars: Record<string, string | number>) {
+  return Object.entries(vars).reduce((acc, [k, v]) => acc.split(`{${k}}`).join(String(v)), text);
+}
+import { useI18n } from "@/lib/i18n";
 
 export type Alert = {
   id: string;
@@ -11,7 +19,7 @@ export type Alert = {
 };
 
 /** Alerts are derived live from company data (invoices, stock, tasks). */
-export async function fetchAlerts(companyId: string): Promise<Alert[]> {
+export async function fetchAlerts(companyId: string, t: (key: string) => string): Promise<Alert[]> {
   const today = new Date().toISOString().slice(0, 10);
 
   const [invoices, products, tasks] = await Promise.all([
@@ -43,8 +51,8 @@ export async function fetchAlerts(companyId: string): Promise<Alert[]> {
     alerts.push({
       id: `invoice-${invoice.id}`,
       type: "invoice",
-      title: `Invoice ${invoice.invoice_number} is overdue`,
-      body: `Due ${invoice.due_date}`,
+      title: t("ops.alerts.invoiceOverdue").replace("{number}", invoice.invoice_number),
+      body: t("ops.alerts.dueOn").replace("{date}", invoice.due_date ?? ""),
       to: "/invoices",
     });
   }
@@ -56,9 +64,11 @@ export async function fetchAlerts(companyId: string): Promise<Alert[]> {
         type: "stock",
         title:
           product.current_stock <= 0
-            ? `${product.name} — Out of stock`
-            : `${product.name} — Low stock`,
-        body: `${product.current_stock} remaining (min ${product.minimum_stock})`,
+            ? t("ops.alerts.outOfStock").replace("{name}", product.name)
+            : t("ops.alerts.lowStock").replace("{name}", product.name),
+        body: t("ops.alerts.stockRemaining")
+          .replace("{count}", String(product.current_stock))
+          .replace("{min}", String(product.minimum_stock)),
         to: "/inventory",
       });
     }
@@ -68,8 +78,8 @@ export async function fetchAlerts(companyId: string): Promise<Alert[]> {
     alerts.push({
       id: `task-${task.id}`,
       type: "task",
-      title: `Task "${task.title}" is overdue`,
-      body: `Due ${task.due_date}`,
+      title: t("ops.alerts.taskOverdue").replace("{title}", task.title),
+      body: t("ops.alerts.dueOn").replace("{date}", task.due_date ?? ""),
       to: "/dashboard",
     });
   }
@@ -78,9 +88,10 @@ export async function fetchAlerts(companyId: string): Promise<Alert[]> {
 }
 
 export function useAlerts(companyId: string | null) {
+  const { t } = useI18n();
   return useQuery({
     queryKey: ["alerts", companyId],
-    queryFn: () => fetchAlerts(companyId as string),
+    queryFn: () => fetchAlerts(companyId as string, t),
     enabled: Boolean(companyId),
   });
 }
