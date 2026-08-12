@@ -1,6 +1,7 @@
 import { Loader2 } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useI18n } from "@/lib/i18n";
 
 export function LoadingRows({ rows = 4 }: { rows?: number }) {
   return (
@@ -12,10 +13,11 @@ export function LoadingRows({ rows = 4 }: { rows?: number }) {
   );
 }
 
-export function LoadingInline({ label = "Loading..." }: { label?: string }) {
+export function LoadingInline({ label }: { label?: string }) {
+  const { t } = useI18n();
   return (
     <p className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-      <Loader2 className="size-4 animate-spin" /> {label}
+      <Loader2 className="size-4 animate-spin" /> {label ?? t("ops.loading")}
     </p>
   );
 }

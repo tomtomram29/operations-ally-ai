@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 import { useCompany } from "@/lib/company";
 import { errorMessage, formatMoney, toNumber } from "@/lib/format";
 import { AppShell } from "@/components/layout/app-shell";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/_authenticated/invoices/$invoiceId")({
 });
 
 function InvoiceDetailPage() {
+  const { t } = useI18n();
   const { invoiceId } = Route.useParams();
   const { companyId, company } = useCompany();
   const queryClient = useQueryClient();
@@ -84,7 +86,7 @@ function InvoiceDetailPage() {
     onSuccess: refresh,
     onError: (error) => {
       console.error("[invoice.update]", error);
-      toast.error(errorMessage(error, "Could not update the invoice."));
+      toast.error(errorMessage(error, t("ops.invoiceDetail.error.update")));
     },
   });
 
@@ -102,12 +104,12 @@ function InvoiceDetailPage() {
     },
     onSuccess: () => {
       setItem({ description: "", quantity: "1", unit_price: "0", tax_rate: "22" });
-      toast.success("Line item added");
+      toast.success(t("ops.invoiceDetail.toast.itemAdded"));
       refresh();
     },
     onError: (error) => {
       console.error("[invoice.addItem]", error);
-      toast.error(errorMessage(error, "Could not add the line item."));
+      toast.error(errorMessage(error, t("ops.invoiceDetail.error.addItem")));
     },
   });
 
@@ -119,7 +121,7 @@ function InvoiceDetailPage() {
     onSuccess: refresh,
     onError: (error) => {
       console.error("[invoice.removeItem]", error);
-      toast.error(errorMessage(error, "Could not remove the line item."));
+      toast.error(errorMessage(error, t("ops.invoiceDetail.error.removeItem")));
     },
   });
 
@@ -129,35 +131,35 @@ function InvoiceDetailPage() {
   return (
     <AppShell>
       <Link to="/invoices" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="size-4" /> Back to invoices
+        <ArrowLeft className="size-4" /> {t("ops.invoiceDetail.back")}
       </Link>
 
       {invoiceQuery.isLoading ? (
         <LoadingRows />
       ) : invoiceQuery.error || !invoice ? (
-        <ErrorBlock message={errorMessage(invoiceQuery.error, "Could not load this invoice.")} />
+        <ErrorBlock message={errorMessage(invoiceQuery.error, t("ops.invoiceDetail.error.load"))} />
       ) : (
         <>
           <PageHeader
-            title={`Invoice ${invoice.invoice_number}`}
-            description="Line items, totals and status are stored live in your database."
+            title={t("ops.invoiceDetail.pageTitle").replace("{number}", invoice.invoice_number)}
+            description={t("ops.invoiceDetail.pageDescription")}
             actions={<InvoiceStatusBadge status={invoice.status} dueDate={invoice.due_date} />}
           />
 
           <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
             <Card className="border-border shadow-[var(--shadow-card)]">
               <CardContent className="space-y-4 p-6">
-                <h2 className="text-sm font-semibold text-foreground">Line items</h2>
+                <h2 className="text-sm font-semibold text-foreground">{t("ops.invoiceDetail.lineItems")}</h2>
                 <div className="space-y-2">
                   {(invoice.invoice_items ?? []).length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No line items yet. Add the first one below.</p>
+                    <p className="text-sm text-muted-foreground">{t("ops.invoiceDetail.noLineItems")}</p>
                   ) : (
                     (invoice.invoice_items ?? []).map((line) => (
                       <div key={line.id} className="flex items-center gap-3 rounded-xl border border-border px-3 py-2">
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-medium text-foreground">{line.description}</p>
                           <p className="text-xs text-muted-foreground">
-                            {toNumber(line.quantity)} × {formatMoney(line.unit_price, currency)} · VAT {toNumber(line.tax_rate)}%
+                            {toNumber(line.quantity)} × {formatMoney(line.unit_price, currency)} · {t("ops.invoiceDetail.vat")} {toNumber(line.tax_rate)}%
                           </p>
                         </div>
                         <span className="text-sm font-medium text-foreground">
@@ -176,29 +178,29 @@ function InvoiceDetailPage() {
                   onSubmit={(event) => {
                     event.preventDefault();
                     if (!item.description.trim()) {
-                      toast.error("Add a description for the line item.");
+                      toast.error(t("ops.invoiceDetail.error.descriptionRequired"));
                       return;
                     }
                     addItem.mutate();
                   }}
                 >
                   <Input
-                    placeholder="Description"
+                    placeholder={t("ops.invoiceDetail.placeholder.description")}
                     value={item.description}
                     onChange={(event) => setItem((prev) => ({ ...prev, description: event.target.value }))}
                   />
                   <Input
-                    type="number" min="0" step="1" placeholder="Qty"
+                    type="number" min="0" step="1" placeholder={t("ops.invoiceDetail.placeholder.quantity")}
                     value={item.quantity}
                     onChange={(event) => setItem((prev) => ({ ...prev, quantity: event.target.value }))}
                   />
                   <Input
-                    type="number" min="0" step="0.01" placeholder="Price"
+                    type="number" min="0" step="0.01" placeholder={t("ops.invoiceDetail.placeholder.price")}
                     value={item.unit_price}
                     onChange={(event) => setItem((prev) => ({ ...prev, unit_price: event.target.value }))}
                   />
                   <Input
-                    type="number" min="0" step="0.5" placeholder="VAT %"
+                    type="number" min="0" step="0.5" placeholder={t("ops.invoiceDetail.placeholder.vat")}
                     value={item.tax_rate}
                     onChange={(event) => setItem((prev) => ({ ...prev, tax_rate: event.target.value }))}
                   />
@@ -209,13 +211,13 @@ function InvoiceDetailPage() {
 
                 <div className="space-y-1 border-t border-border pt-4 text-sm">
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Subtotal</span><span>{formatMoney(invoice.subtotal, currency)}</span>
+                    <span>{t("ops.invoiceDetail.subtotal")}</span><span>{formatMoney(invoice.subtotal, currency)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>VAT</span><span>{formatMoney(invoice.tax_total, currency)}</span>
+                    <span>{t("ops.invoiceDetail.vat")}</span><span>{formatMoney(invoice.tax_total, currency)}</span>
                   </div>
                   <div className="flex justify-between text-base font-semibold text-foreground">
-                    <span>Total</span><span>{formatMoney(invoice.total, currency)}</span>
+                    <span>{t("ops.invoiceDetail.total")}</span><span>{formatMoney(invoice.total, currency)}</span>
                   </div>
                 </div>
               </CardContent>
@@ -224,43 +226,43 @@ function InvoiceDetailPage() {
             <Card className="h-fit border-border shadow-[var(--shadow-card)]">
               <CardContent className="space-y-4 p-6">
                 <div className="space-y-1.5">
-                  <Label>Customer</Label>
+                  <Label>{t("ops.invoiceDetail.customer")}</Label>
                   <Select
                     value={invoice.customer_id ?? "none"}
                     onValueChange={(value) => updateInvoice.mutate({ customer_id: value === "none" ? null : value })}
                   >
-                    <SelectTrigger><SelectValue placeholder="Select a customer" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder={t("ops.invoiceDetail.selectCustomer")} /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No customer</SelectItem>
+                      <SelectItem value="none">{t("ops.invoices.noCustomer")}</SelectItem>
                       {(customersQuery.data ?? []).map((customer) => (
                         <SelectItem key={customer.id} value={customer.id}>
-                          {[customer.first_name, customer.last_name].filter(Boolean).join(" ") || customer.company_name || "Unnamed"}
+                          {[customer.first_name, customer.last_name].filter(Boolean).join(" ") || customer.company_name || t("ops.invoiceDetail.unnamed")}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Status</Label>
+                  <Label>{t("ops.invoiceDetail.status")}</Label>
                   <Select value={invoice.status} onValueChange={(value) => updateInvoice.mutate({ status: value })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="sent">Sent</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
-                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                      <SelectItem value="draft">{t("ops.invoices.status.draft")}</SelectItem>
+                      <SelectItem value="sent">{t("ops.invoices.status.sent")}</SelectItem>
+                      <SelectItem value="paid">{t("ops.invoices.status.paid")}</SelectItem>
+                      <SelectItem value="cancelled">{t("ops.invoices.status.cancelled")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="issue">Issue date</Label>
+                  <Label htmlFor="issue">{t("ops.invoiceDetail.issueDate")}</Label>
                   <Input
                     id="issue" type="date" defaultValue={invoice.issue_date}
                     onBlur={(event) => updateInvoice.mutate({ issue_date: event.target.value })}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="due">Due date</Label>
+                  <Label htmlFor="due">{t("ops.invoiceDetail.dueDate")}</Label>
                   <Input
                     id="due" type="date" defaultValue={invoice.due_date ?? ""}
                     onBlur={(event) => updateInvoice.mutate({ due_date: event.target.value })}

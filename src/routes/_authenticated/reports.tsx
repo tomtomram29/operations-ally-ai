@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -22,18 +23,19 @@ export const Route = createFileRoute("/_authenticated/reports")({
 });
 
 function ReportsPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="Reports" description="Analytics and AI-written business summaries." />
+      <PageHeader title={t("mod.reports.title")} description={t("mod.reports.desc")} />
       <ModulePlaceholder
         icon={BarChart3}
-        title="Reports module"
-        summary="Scaffolded route ready for charting and exportable reporting."
+        title={t("mod.reports.placeholderTitle")}
+        summary={t("mod.reports.summary")}
         planned={[
-          "Revenue and cost reports",
-          "Custom date ranges",
-          "Exports (PDF/CSV)",
-          "AI weekly & monthly summaries",
+          t("mod.reports.p1"),
+          t("mod.reports.p2"),
+          t("mod.reports.p3"),
+          t("mod.reports.p4"),
         ]}
       />
     </AppShell>

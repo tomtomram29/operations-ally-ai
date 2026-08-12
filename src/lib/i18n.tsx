@@ -1,5 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
+import { extraDict } from "@/lib/i18n-dict";
+import { setFormatLocale } from "@/lib/format";
+
 export const LANGUAGES = [
   { code: "it", label: "Italiano", flag: "🇮🇹" },
   { code: "en", label: "English", flag: "🇬🇧" },
@@ -231,7 +234,14 @@ const fr: Dict = {
   "auth.createLink": "Créer un compte",
 };
 
-const dictionaries: Record<LanguageCode, Dict> = { en, it, es, fr };
+const base: Record<LanguageCode, Dict> = { en, it, es, fr };
+
+const dictionaries: Record<LanguageCode, Dict> = {
+  en: { ...base.en, ...extraDict("en") },
+  it: { ...base.it, ...extraDict("it") },
+  es: { ...base.es, ...extraDict("es") },
+  fr: { ...base.fr, ...extraDict("fr") },
+};
 
 type I18nValue = {
   language: LanguageCode;
@@ -270,6 +280,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    setFormatLocale(language);
     if (ready) document.documentElement.lang = language;
   }, [language, ready]);
 
@@ -280,7 +291,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: string) => dictionaries[language][key] ?? en[key] ?? key,
+    (key: string) => dictionaries[language][key] ?? dictionaries.en[key] ?? key,
     [language],
   );
 

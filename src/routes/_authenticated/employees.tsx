@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { IdCard } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -22,18 +23,19 @@ export const Route = createFileRoute("/_authenticated/employees")({
 });
 
 function EmployeesPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="Employees" description="Team directory, roles and workload." />
+      <PageHeader title={t("mod.employees.title")} description={t("mod.employees.desc")} />
       <ModulePlaceholder
         icon={IdCard}
-        title="Employees module"
-        summary="Scaffolded route ready for the team directory and role-based access."
+        title={t("mod.employees.placeholderTitle")}
+        summary={t("mod.employees.summary")}
         planned={[
-          "Team directory",
-          "Roles and permissions",
-          "Time tracking",
-          "Workload overview",
+          t("mod.employees.p1"),
+          t("mod.employees.p2"),
+          t("mod.employees.p3"),
+          t("mod.employees.p4"),
         ]}
       />
     </AppShell>

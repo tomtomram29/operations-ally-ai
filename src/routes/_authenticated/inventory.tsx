@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Package } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -22,18 +23,19 @@ export const Route = createFileRoute("/_authenticated/inventory")({
 });
 
 function InventoryPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="Inventory" description="Stock levels, movements and reorder alerts." />
+      <PageHeader title={t("mod.inventory.title")} description={t("mod.inventory.desc")} />
       <ModulePlaceholder
         icon={Package}
-        title="Inventory module"
-        summary="Scaffolded route ready for stock tables and depletion forecasting."
+        title={t("mod.inventory.placeholderTitle")}
+        summary={t("mod.inventory.summary")}
         planned={[
-          "Product catalog",
-          "Stock movements",
-          "Low-stock alerts",
-          "Depletion forecasting",
+          t("mod.inventory.p1"),
+          t("mod.inventory.p2"),
+          t("mod.inventory.p3"),
+          t("mod.inventory.p4"),
         ]}
       />
     </AppShell>

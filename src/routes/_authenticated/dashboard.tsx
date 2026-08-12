@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LayoutDashboard } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -22,23 +23,21 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader
-        title="Dashboard"
-        description="Your business at a glance. The AI Executive Assistant briefing lands here in Step 3."
-      />
+      <PageHeader title={t("mod.dashboard.title")} description={t("mod.dashboard.desc")} />
       <ModulePlaceholder
         icon={LayoutDashboard}
-        title="Dashboard module"
-        summary="Architecture is in place: shell, navigation, design system and routing. The KPI grid, charts and AI briefing card come next."
+        title={t("mod.dashboard.placeholderTitle")}
+        summary={t("mod.dashboard.summary")}
         planned={[
-          "AI Executive Assistant briefing card",
-          "Revenue, expenses, profit and cash flow KPIs",
-          "Open invoices and overdue alerts",
-          "Performance charts (Recharts)",
-          "Inventory alerts and tasks",
-          "Quick actions and upcoming meetings",
+          t("mod.dashboard.p1"),
+          t("mod.dashboard.p2"),
+          t("mod.dashboard.p3"),
+          t("mod.dashboard.p4"),
+          t("mod.dashboard.p5"),
+          t("mod.dashboard.p6"),
         ]}
       />
     </AppShell>

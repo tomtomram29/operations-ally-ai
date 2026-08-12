@@ -1,6 +1,20 @@
+const LOCALES: Record<string, string> = {
+  en: "en-GB",
+  it: "it-IT",
+  es: "es-ES",
+  fr: "fr-FR",
+};
+
+let activeLocale = "it-IT";
+
+/** Keeps number/date formatting aligned with the language the user picked. */
+export function setFormatLocale(code: string) {
+  activeLocale = LOCALES[code] ?? "en-GB";
+}
+
 export function formatMoney(value: number | string | null | undefined, currency = "EUR") {
   const amount = typeof value === "string" ? Number(value) : (value ?? 0);
-  return new Intl.NumberFormat("it-IT", {
+  return new Intl.NumberFormat(activeLocale, {
     style: "currency",
     currency: currency || "EUR",
     maximumFractionDigits: 2,
@@ -11,7 +25,7 @@ export function formatDate(value: string | null | undefined) {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("it-IT", { dateStyle: "medium" }).format(date);
+  return new Intl.DateTimeFormat(activeLocale, { dateStyle: "medium" }).format(date);
 }
 
 export function toNumber(value: unknown, fallback = 0) {

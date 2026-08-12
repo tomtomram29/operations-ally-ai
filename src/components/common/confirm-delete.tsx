@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useI18n } from "@/lib/i18n";
 
 type ConfirmDeleteProps = {
   trigger: ReactNode;
@@ -23,12 +24,13 @@ type ConfirmDeleteProps = {
 
 export function ConfirmDelete({
   trigger,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmLabel = "Delete",
+  title,
+  description,
+  confirmLabel,
   onConfirm,
   disabled,
 }: ConfirmDeleteProps) {
+  const { t } = useI18n();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild disabled={disabled}>
@@ -36,16 +38,16 @@ export function ConfirmDelete({
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle>{title ?? t("ops.confirmDelete.title")}</AlertDialogTitle>
+          <AlertDialogDescription>{description ?? t("ops.confirmDelete.description")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("ops.confirmDelete.cancel")}</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {confirmLabel}
+            {confirmLabel ?? t("ops.confirmDelete.confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

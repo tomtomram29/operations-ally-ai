@@ -1,0 +1,1 @@
+CREATE POLICY "Owner can view own company" ON public.companies FOR SELECT TO authenticated USING (owner_id = auth.uid());

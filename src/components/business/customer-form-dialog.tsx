@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompany } from "@/lib/company";
 import { errorMessage } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ export function CustomerFormDialog({
   trigger: ReactNode;
   customer?: Customer;
 }) {
+  const { t } = useI18n();
   const { companyId } = useCompany();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -95,7 +97,7 @@ export function CustomerFormDialog({
       }
     },
     onSuccess: () => {
-      toast.success(customer ? "Customer updated" : "Customer created");
+      toast.success(customer ? t("crm.form.toast.updated") : t("crm.form.toast.created"));
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       queryClient.invalidateQueries({ queryKey: ["customer", customer?.id] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
@@ -103,17 +105,17 @@ export function CustomerFormDialog({
     },
     onError: (error) => {
       console.error("[customer.save]", error);
-      toast.error(errorMessage(error, "Could not save this customer."));
+      toast.error(errorMessage(error, t("crm.form.toast.saveError")));
     },
   });
 
   function validate() {
     const next: Record<string, string> = {};
     if (!form.first_name.trim() && !form.last_name.trim() && !form.company_name.trim()) {
-      next["first_name"] = "Enter a name or a company name.";
+      next["first_name"] = t("crm.form.error.nameRequired");
     }
     if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      next["email"] = "Enter a valid email address.";
+      next["email"] = t("crm.form.error.invalidEmail");
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -139,8 +141,8 @@ export function CustomerFormDialog({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{customer ? "Edit customer" : "New customer"}</DialogTitle>
-          <DialogDescription>Customer records are stored in your company database.</DialogDescription>
+          <DialogTitle>{customer ? t("crm.form.editTitle") : t("crm.form.newTitle")}</DialogTitle>
+          <DialogDescription>{t("crm.form.description")}</DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(event) => {
@@ -151,18 +153,18 @@ export function CustomerFormDialog({
           className="space-y-4"
         >
           <div className="grid gap-4 sm:grid-cols-2">
-            {field("first_name", "First name")}
-            {field("last_name", "Last name")}
-            {field("company_name", "Company name")}
-            {field("vat_number", "Tax ID / VAT number")}
-            {field("email", "Email", "email")}
-            {field("phone", "Phone")}
-            {field("address", "Address")}
-            {field("city", "City")}
-            {field("country", "Country")}
+            {field("first_name", t("crm.form.firstName"))}
+            {field("last_name", t("crm.form.lastName"))}
+            {field("company_name", t("crm.form.companyName"))}
+            {field("vat_number", t("crm.form.vatNumber"))}
+            {field("email", t("crm.form.email"), "email")}
+            {field("phone", t("crm.form.phone"))}
+            {field("address", t("crm.form.address"))}
+            {field("city", t("crm.form.city"))}
+            {field("country", t("crm.form.country"))}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">{t("crm.form.notes")}</Label>
             <Textarea
               id="notes"
               rows={3}
@@ -172,11 +174,11 @@ export function CustomerFormDialog({
           </div>
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Cancel
+              {t("crm.form.cancel")}
             </Button>
             <Button type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
-              {mutation.isPending ? "Saving..." : customer ? "Save changes" : "Create customer"}
+              {mutation.isPending ? t("crm.form.saving") : customer ? t("crm.form.save") : t("crm.form.create")}
             </Button>
           </DialogFooter>
         </form>

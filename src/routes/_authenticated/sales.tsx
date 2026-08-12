@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TrendingUp } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
@@ -22,18 +23,19 @@ export const Route = createFileRoute("/_authenticated/sales")({
 });
 
 function SalesPage() {
+  const { t } = useI18n();
   return (
     <AppShell>
-      <PageHeader title="Sales" description="Pipeline, quotations and order performance." />
+      <PageHeader title={t("mod.sales.title")} description={t("mod.sales.desc")} />
       <ModulePlaceholder
         icon={TrendingUp}
-        title="Sales module"
-        summary="Scaffolded route ready for the pipeline board and revenue analytics."
+        title={t("mod.sales.placeholderTitle")}
+        summary={t("mod.sales.summary")}
         planned={[
-          "Pipeline board",
-          "Quotations",
-          "Orders",
-          "Sales analytics with Recharts",
+          t("mod.sales.p1"),
+          t("mod.sales.p2"),
+          t("mod.sales.p3"),
+          t("mod.sales.p4"),
         ]}
       />
     </AppShell>
