@@ -5,6 +5,7 @@ import { Search as SearchIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompany } from "@/lib/company";
 import { errorMessage, formatMoney } from "@/lib/format";
+import { useI18n } from "@/lib/i18n";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/common/empty-state";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/_authenticated/search")({
 });
 
 function SearchPage() {
+  const { t } = useI18n();
   const { q } = Route.useSearch();
   const { companyId, company } = useCompany();
   const currency = company?.currency ?? "EUR";
@@ -61,19 +63,19 @@ function SearchPage() {
 
   return (
     <AppShell>
-      <PageHeader title="Search results" description={q ? `Results for “${q}”` : "Type a search term in the header."} />
+      <PageHeader title={t("crm.search.title")} description={q ? t("crm.search.resultsFor").replace("{q}", q) : t("crm.search.typeToSearch")} />
 
       {results.isLoading ? (
         <LoadingRows />
       ) : results.error ? (
-        <ErrorBlock message={errorMessage(results.error, "Could not run this search.")} />
+        <ErrorBlock message={errorMessage(results.error, t("crm.search.error"))} />
       ) : total === 0 ? (
-        <EmptyState icon={SearchIcon} title="No results" description="Nothing matched your search in customers or invoices." />
+        <EmptyState icon={SearchIcon} title={t("crm.search.empty.title")} description={t("crm.search.empty.description")} />
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="border-border shadow-[var(--shadow-card)]">
             <CardContent className="space-y-2 p-6">
-              <h2 className="text-sm font-semibold text-foreground">Customers</h2>
+              <h2 className="text-sm font-semibold text-foreground">{t("crm.search.customers")}</h2>
               {results.data?.customers.map((customer) => (
                 <Link
                   key={customer.id}
@@ -81,14 +83,14 @@ function SearchPage() {
                   params={{ customerId: customer.id }}
                   className="block rounded-xl border border-border px-3 py-2 text-sm hover:bg-surface"
                 >
-                  {[customer.first_name, customer.last_name].filter(Boolean).join(" ") || customer.company_name || "Unnamed"}
+                  {[customer.first_name, customer.last_name].filter(Boolean).join(" ") || customer.company_name || t("crm.search.unnamed")}
                 </Link>
               ))}
             </CardContent>
           </Card>
           <Card className="border-border shadow-[var(--shadow-card)]">
             <CardContent className="space-y-2 p-6">
-              <h2 className="text-sm font-semibold text-foreground">Invoices</h2>
+              <h2 className="text-sm font-semibold text-foreground">{t("crm.search.invoices")}</h2>
               {results.data?.invoices.map((invoice) => (
                 <Link
                   key={invoice.id}

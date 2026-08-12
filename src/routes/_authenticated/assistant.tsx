@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useI18n } from "@/lib/i18n";
 import { Sparkles } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { ModulePlaceholder } from "@/components/common/module-placeholder";
-import { useI18n } from "@/lib/i18n";
 
 const title = "AI Assistant — Northstar OS";
 const description =
