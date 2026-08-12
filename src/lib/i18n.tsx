@@ -280,6 +280,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    setFormatLocale(language);
     if (ready) document.documentElement.lang = language;
   }, [language, ready]);
 
