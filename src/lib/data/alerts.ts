@@ -3,12 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 
-type T = (key: string) => string;
-
-function fill(text: string, vars: Record<string, string | number>) {
-  return Object.entries(vars).reduce((acc, [k, v]) => acc.split(`{${k}}`).join(String(v)), text);
-}
-
 export type Alert = {
   id: string;
   type: "invoice" | "stock" | "task";
