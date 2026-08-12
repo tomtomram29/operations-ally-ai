@@ -2,7 +2,6 @@ import { Loader2 } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useI18n } from "@/lib/i18n";
-import { useI18n } from "@/lib/i18n";
 
 export function LoadingRows({ rows = 4 }: { rows?: number }) {
   return (

@@ -6,12 +6,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useAlerts } from "@/lib/data/alerts";
 import { useCompany } from "@/lib/company";
 import { useI18n } from "@/lib/i18n";
-import { useI18n } from "@/lib/i18n";
 
 export function NotificationsBell() {
   const { t } = useI18n();
   const { companyId } = useCompany();
-  const { t } = useI18n();
   const { data: alerts = [], isLoading } = useAlerts(companyId);
 
   return (

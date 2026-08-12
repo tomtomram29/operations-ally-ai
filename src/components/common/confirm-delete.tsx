@@ -12,7 +12,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useI18n } from "@/lib/i18n";
-import { useI18n } from "@/lib/i18n";
 
 type ConfirmDeleteProps = {
   trigger: ReactNode;

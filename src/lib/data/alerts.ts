@@ -8,7 +8,6 @@ type T = (key: string) => string;
 function fill(text: string, vars: Record<string, string | number>) {
   return Object.entries(vars).reduce((acc, [k, v]) => acc.split(`{${k}}`).join(String(v)), text);
 }
-import { useI18n } from "@/lib/i18n";
 
 export type Alert = {
   id: string;
