@@ -289,7 +289,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: string) => dictionaries[language][key] ?? en[key] ?? key,
+    (key: string) => dictionaries[language][key] ?? dictionaries.en[key] ?? key,
     [language],
   );
 
