@@ -1,10 +1,9 @@
 import type { LanguageCode } from "@/lib/i18n";
+import type { PartialDict } from "./types";
 
 import { modules } from "./modules";
 import { crm } from "./crm";
 import { ops } from "./ops";
-
-export type PartialDict = Partial<Record<LanguageCode, Record<string, string>>>;
 
 const packs: PartialDict[] = [modules, crm, ops];
 

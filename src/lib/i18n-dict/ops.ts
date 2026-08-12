@@ -1,3 +1,3 @@
-import type { PartialDict } from "./index";
+import type { PartialDict } from "./types";
 
 export const ops: PartialDict = { en: {}, it: {}, es: {}, fr: {} };
