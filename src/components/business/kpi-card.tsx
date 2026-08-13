@@ -12,7 +12,7 @@ type KpiCardProps = {
   value: string;
   hint?: string;
   trend?: KpiTrend;
-  changeLabel?: string;
+  changeLabel?: string | undefined;
 };
 
 export function KpiCard({ icon: Icon, label, value, hint, trend = "flat", changeLabel }: KpiCardProps) {
