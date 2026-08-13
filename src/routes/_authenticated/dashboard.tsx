@@ -212,7 +212,7 @@ function DashboardPage() {
         .map((key) => ({
           key,
           label: t(`ops.invoices.status.${key}`),
-          value: stats.statusCounts[key],
+          value: stats.statusCounts[key] ?? 0,
         }))
     : [];
 
