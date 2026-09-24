@@ -7,9 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // Public (publishable) backend config used as a fallback when build-time env is missing.
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://brcnzxtevdfxclelbxnz.supabase.co";
+const SUPABASE_URL = process.env['VITE_SUPABASE_URL'] || "https://brcnzxtevdfxclelbxnz.supabase.co";
 const SUPABASE_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_gNxec3rVZoG-Qqr47WA9Wg_aQ50qkkt";
+  process.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || "sb_publishable_gNxec3rVZoG-Qqr47WA9Wg_aQ50qkkt";
 
 export default defineConfig({
   tanstackStart: {
